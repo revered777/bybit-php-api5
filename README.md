@@ -53,7 +53,7 @@ use ByBit\SDK\ByBitApi;
 $bybitApi = new ByBitApi();
 
 //create public API on sandbox environment
-$bybitApi = new ByBitApi('', '', true);
+$bybitApi = new ByBitApi('', '', ByBitApi::PROD_API_URL);
 ```
 
 ### Create Private API Client
@@ -63,17 +63,20 @@ include '../vendor/autoload.php';
 
 use ByBit\SDK\ByBitApi;
 
-//Input your API Key
+//Your API Key
 $api_key = 'XXXXXXXXXX';
 
-//Input your Secret Key
+//Your Secret Key
 $api_secret = 'XXXXXXXXXX';
 
-//Environment
-$sandbox = true;
+//Your Host
+//$host = ByBit\SDK\ByBitApi::TESTNET_API_URL;
+//$host = ByBit\SDK\ByBitApi::DEMO_API_URL;
+$host = ByBit\SDK\ByBitApi::PROD_API_URL;
+
 
 //create private API
-$bybitApi = new ByBitApi($api_key, $api_secret, $sandbox);
+$bybitApi = new ByBitApi($api_key, $api_secret, $host);
 ```
 
 
@@ -98,6 +101,11 @@ Configure `key_secret.php` with your API Keys and run example like:
 ```
 php Position.php
 ```
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for full project log.
+
 
 ## Contributing
 
