@@ -15,24 +15,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Change
 
-- In order to support Demo Account, the signature of constructor is changed.
+Unfortunatly this release has a breaking change on the constructor of ByBitApi. 
+The "sandbox" boolean parameter is replaced by "host" string parameter that represent the API endpoint.
 
-The old signature was:
-
-```php
-$bybitApi = new ByBitApi($key, $secret, $sandbox);
+The old code was: 
+```
+$bybitApi = new ByBitApi($api_key, $api_secret, $sandbox);`
 ```
 
-The new signature become:
-
-```php
-$bybitApi = new ByBitApi($key, $secret, $host);
+The new code will be: 
+```
+$bybitApi = new ByBitApi($api_key, $api_secret, $host);
 ```
 
-In order to fix the code, you have to modify your code as follow:
+Possible host values: 
 
+* `ByBit\SDK\ByBitApi::TESTNET_API_URL`
+* `ByBit\SDK\ByBitApi::DEMO_API_URL`
+* `ByBit\SDK\ByBitApi::PROD_API_URL`
 
-```php
+You can replace the old code with:
+
+```
 $bybitApi = new ByBitApi($key, $secret, $sandbox ? ByBitApi::TESTNET_API_URL : ByBitApi::PROD_API_URL);
 ```
 
