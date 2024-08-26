@@ -6,7 +6,7 @@ use ByBit\SDK\ByBitApi;
 use ByBit\SDK\Enums\Category;
 
 //create public API (no auth required)
-$bybitApi = new ByBitApi('', '', $sandbox);
+$bybitApi = new ByBitApi('', '', $host);
 
 // Get Kline
 $params = ['category' => Category::SPOT, 'symbol' => 'BTCUSDT', 'interval' => '1'];

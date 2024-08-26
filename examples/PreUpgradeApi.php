@@ -7,7 +7,7 @@ use ByBit\SDK\Enums\AccountType;
 use ByBit\SDK\Enums\Category;
 
 //create private API
-$bybitApi = new ByBitApi($api_key, $api_secret, $sandbox);
+$bybitApi = new ByBitApi($api_key, $api_secret, $host);
 
 // Get Pre-upgrade Order History
 $params = ['category' => Category::LINEAR, "symbol" => "BTCUSDT"];

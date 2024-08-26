@@ -11,7 +11,7 @@ use ByBit\SDK\Enums\Side;
 use ByBit\SDK\Enums\OrderType;
 
 //create private API
-$bybitApi = new ByBitApi($api_key, $api_secret, $sandbox);
+$bybitApi = new ByBitApi($api_key, $api_secret, $host);
 
 // Place Order
 $orderLinkId = uniqid();

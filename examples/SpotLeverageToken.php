@@ -6,7 +6,7 @@ use ByBit\SDK\ByBitApi;
 use ByBit\SDK\Enums\AccountType;
 
 //create private API
-$bybitApi = new ByBitApi('', '', $sandbox);
+$bybitApi = new ByBitApi('', '', $host);
 
 // Get Leverage Token Info
 $params = ["ltCoin" => "BTC3L"];

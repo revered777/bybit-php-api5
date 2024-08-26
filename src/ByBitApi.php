@@ -39,12 +39,17 @@ class ByBitApi {
     /**
      * @var string sandbox API URL
      */
-    const SANDBOX_API_URL = "https://api-testnet.bybit.com";
+    const TESTNET_API_URL = "https://api-testnet.bybit.com";
 
     /**
      * @var string prod API URL
      */
     const PROD_API_URL = "https://api.bybit.com";
+
+    /**
+     * @var string demo API URL
+     */
+    const DEMO_API_URL = "https://api-demo.bybit.com";
     
     
     protected $key;
@@ -59,10 +64,10 @@ class ByBitApi {
      * @param string $secret
      * @param string $sandbox, default false, true for use sandbox api
      */
-    function __construct($key = '', $secret = '', $sandbox = false) {
+    function __construct(string $key = '', string $secret = '', string $host = self::PROD_API_URL) {
         $this->key = $key;
         $this->secret = $secret;
-        $this->host = $sandbox ? self::SANDBOX_API_URL : self::PROD_API_URL;
+        $this->host = $host;
     }
     
     
