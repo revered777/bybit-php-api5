@@ -86,7 +86,11 @@ class ApiRequest {
         //build query string
         $query_string = '';
         foreach ($params as $key => $value) {
-            $query_string .= sprintf('%s=%s&', $key, $value);
+            if( is_array($value) ){
+                $query_string .= sprintf('%s=%s&', $key, json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+            }else{
+                $query_string .= sprintf('%s=%s&', $key, $value);
+            }
         }
         $query_string = rtrim($query_string, '&');
 
