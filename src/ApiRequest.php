@@ -151,7 +151,7 @@ class ApiRequest {
             }
             //check if response is not succesful
             else if( !$response->isSuccessful() ){
-                $exception = new HttpException($response->getApiMessage(), $response->getApiCode());
+                $exception = new HttpException($response->getApiMessage().' uri: '.$uri.' params: '.print_r($params, 1), $response->getApiCode());
                 throw $exception;
             }
 
