@@ -146,7 +146,7 @@ class ApiRequest {
             
             //check if it's an error response
             if ($response->getHttpResponse()->getStatusCode() != 200) {
-                $exception = new HttpException($response->getHttpResponse()->getReasonPhrase(), $response->getHttpResponse()->getStatusCode());
+                $exception = new HttpException($response->getHttpResponse()->getReasonPhrase().' uri: '.$uri.' params: '.print_r($params, 1), $response->getHttpResponse()->getStatusCode());
                 throw $exception;
             }
             //check if response is not succesful
