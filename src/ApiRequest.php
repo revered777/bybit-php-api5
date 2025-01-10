@@ -16,7 +16,7 @@ class ApiRequest {
     /**
      * @var string ByBit API RECV Window
      */
-    const BAPI_RECV_WINDOW = "20000";
+    const BAPI_RECV_WINDOW = "22000";
     
     /**
      * @var string ByBit API Sign Type
