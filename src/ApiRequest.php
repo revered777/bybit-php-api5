@@ -70,6 +70,28 @@ class ApiRequest {
             throw $exception;
         }
 
+        $run_line = '';
+        $next = false;
+        $debug_backtrace = debug_backtrace();
+        foreach($debug_backtrace as $k => $t ){
+
+            if( $next ){
+                $run_line = last(explode('/',$t['file'])).':'.$t['line'];
+
+                if( isset($debug_backtrace[$k + 1]) ){
+                    $func_run = $debug_backtrace[$k + 1]['function'];
+                    $run_line .= ' '.$func_run.'()';
+                }
+
+                break;
+            }
+
+            if( str($t['file'])->contains('ByBitService.php') ){
+                $next = true;
+            }
+
+        }
+
         //Guzzle Config
         $config = [
                 'base_uri'        => $this->host,
@@ -164,7 +186,8 @@ class ApiRequest {
                     $response->getHttpResponse()->getStatusCode(),
                     self::getRequestType($method),
                     'error',
-                    $response_time
+                    $response_time,
+                    $run_line
                 );
 
                 $exception = new HttpException($response->getHttpResponse()->getReasonPhrase().' uri: '.$uri.' params: '.print_r($params, 1), $response->getHttpResponse()->getStatusCode());
@@ -180,7 +203,8 @@ class ApiRequest {
                     $response->getBody().' + api_code: '.$response->getApiCode(),
                     self::getRequestType($method),
                     'error',
-                    $response_time
+                    $response_time,
+                    $run_line
                 );
 
                 $exception = new HttpException($response->getApiMessage().' uri: '.$uri.' params: '.print_r($params, 1), $response->getApiCode());
@@ -194,7 +218,8 @@ class ApiRequest {
                 $response->getApiData(),
                 self::getRequestType($method),
                 'success',
-                $response_time
+                $response_time,
+                $run_line
             );
 
             return $response;
@@ -209,7 +234,8 @@ class ApiRequest {
                 'GuzzleException: '.$e->getMessage(),
                 self::getRequestType($method),
                 'error',
-                $response_time
+                $response_time,
+                $run_line
             );
 
             $exception = new HttpException($e->getMessage(), $e->getCode(), $e);
@@ -224,7 +250,8 @@ class ApiRequest {
                 'HttpException: '.$exception->getMessage(),
                 self::getRequestType($method),
                 'error',
-                $response_time
+                $response_time,
+                $run_line
             );
 
             throw $exception;
@@ -238,7 +265,8 @@ class ApiRequest {
                 'Exception: '.$e->getMessage(),
                 self::getRequestType($method),
                 'error',
-                $response_time
+                $response_time,
+                $run_line
             );
 
             $exception = new HttpException($e->getMessage(), $e->getCode(), $e);
