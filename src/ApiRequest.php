@@ -1,6 +1,7 @@
 <?php
 namespace ByBit\SDK;
 
+use App\Classes\ApiLogCls;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Client;
 use ByBit\SDK\Exceptions\InvalidApiUriException;
@@ -17,7 +18,7 @@ class ApiRequest {
      * @var string ByBit API RECV Window
      */
     const BAPI_RECV_WINDOW = "22000";
-    
+
     /**
      * @var string ByBit API Sign Type
      */
@@ -34,47 +35,49 @@ class ApiRequest {
     protected $key;
     protected $secret;
     protected $host;
+    protected $accound_id;
     protected $config = ['debug' => false];
 
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param string $key
      * @param string $secret
      * @param string $host
      */
-    function __construct(string $key='', string $secret='', string $host='https://api.bybit.com') {
+    function __construct(string $key='', string $secret='', string $host='https://api.bybit.com', int $accound_id = null) {
         $this->key = $key;
         $this->secret = $secret;
         $this->host = $host;
+        $this->accound_id = $accound_id;
     }
-    
-    
+
+
     /**
      * @param string $method
      * @param string $uri
      * @param array $params
      * @param array $headers
      * @param int $timeout
-     * @return ResponseInterface 
+     * @return ResponseInterface
      * @throws Exceptions\HttpException
      * @throws Exceptions\InvalidApiUriException
      */
-    protected function call($method, $uri, array $params = [], array $headers = [], $timeout = 30) {
+    protected function call($method, $uri, array $params = [], array $headers = [], $timeout = 40) {
         if (!$this->host && strpos($uri, '://') === false) {
             $exception = new InvalidApiUriException('Invalid base_uri or uri, must set base_uri or set uri to a full url');
             throw $exception;
         }
-        
+
         //Guzzle Config
         $config = [
-            'base_uri'        => $this->host,
-            'timeout'         => $timeout,
-            'connect_timeout' => 30,
-            'http_errors'     => false
-        ] + $this->config;
-        
+                'base_uri'        => $this->host,
+                'timeout'         => $timeout,
+                'connect_timeout' => 30,
+                'http_errors'     => false
+            ] + $this->config;
+
         //initialize options
         $options = [
             'headers' => []
@@ -136,39 +139,122 @@ class ApiRequest {
                 $exception = new HttpException('Unsupported method ' . $method, 0);
                 throw $exception;
         }
-        
+
         //initialize Guzzle Client
         $client = new Client($config);
-        
+
         try {
+
+            $start_time = microtime(true);
+
             $guzzleResponse = $client->request($method, $uri, $options);
+
+            $end_time = microtime(true);
+            $response_time = $end_time - $start_time;
+
             $response = new ApiResponse($guzzleResponse);
-            
+
             //check if it's an error response
             if ($response->getHttpResponse()->getStatusCode() != 200) {
+
+                ApiLogCls::save(
+                    $this->accound_id,
+                    $uri,
+                    $params,
+                    $response->getHttpResponse()->getStatusCode(),
+                    self::getRequestType($method),
+                    'error',
+                    $response_time
+                );
+
                 $exception = new HttpException($response->getHttpResponse()->getReasonPhrase().' uri: '.$uri.' params: '.print_r($params, 1), $response->getHttpResponse()->getStatusCode());
                 throw $exception;
             }
             //check if response is not succesful
             else if( !$response->isSuccessful() ){
+
+                ApiLogCls::save(
+                    $this->accound_id,
+                    $uri,
+                    $params,
+                    $response->getBody().' + api_code: '.$response->getApiCode(),
+                    self::getRequestType($method),
+                    'error',
+                    $response_time
+                );
+
                 $exception = new HttpException($response->getApiMessage().' uri: '.$uri.' params: '.print_r($params, 1), $response->getApiCode());
                 throw $exception;
             }
 
+            ApiLogCls::save(
+                $this->accound_id,
+                $uri,
+                $params,
+                $response->getApiData(),
+                self::getRequestType($method),
+                'success',
+                $response_time
+            );
+
             return $response;
-        } 
+
+        }
         catch (\GuzzleHttp\Exception\GuzzleException $e) {
+
+            ApiLogCls::save(
+                $this->accound_id,
+                $uri,
+                $params,
+                'GuzzleException: '.$e->getMessage(),
+                self::getRequestType($method),
+                'error',
+                $response_time
+            );
+
             $exception = new HttpException($e->getMessage(), $e->getCode(), $e);
             throw $exception;
         }
         catch (HttpException $exception) {
+
+            ApiLogCls::save(
+                $this->accound_id,
+                $uri,
+                $params,
+                'HttpException: '.$exception->getMessage(),
+                self::getRequestType($method),
+                'error',
+                $response_time
+            );
+
             throw $exception;
-        } 
+        }
         catch (\Exception $e) {
+
+            ApiLogCls::save(
+                $this->accound_id,
+                $uri,
+                $params,
+                'Exception: '.$e->getMessage(),
+                self::getRequestType($method),
+                'error',
+                $response_time
+            );
+
             $exception = new HttpException($e->getMessage(), $e->getCode(), $e);
             throw $exception;
         }
-        
+
+    }
+
+    protected function getRequestType( string $method ): string
+    {
+
+        if( $method == self::METHOD_GET )
+            return 'get';
+
+        return 'change';
+
     }
 
 }

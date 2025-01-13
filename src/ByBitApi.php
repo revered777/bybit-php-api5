@@ -25,12 +25,12 @@ class ByBitApi {
      * @var string SDK Version
      */
     const NAME = "ByBit-PHP-SDK";
-    
+
     /**
      * @var string SDK Version
      */
     const VERSION = "0.6.1";
-    
+
     /**
      * @var string SDK update date
      */
@@ -50,128 +50,130 @@ class ByBitApi {
      * @var string demo API URL
      */
     const DEMO_API_URL = "https://api-demo.bybit.com";
-    
-    
+
+
     protected $key;
     protected $secret;
     protected $host;
-    
-    
+    protected $accound_id;
+
+
     /**
      * Constructor
-     * 
+     *
      * @param string $key
      * @param string $secret
      * @param string $sandbox, default false, true for use sandbox api
      */
-    function __construct(string $key = '', string $secret = '', string $host = self::PROD_API_URL) {
+    function __construct(string $key = '', string $secret = '', string $host = self::PROD_API_URL, int $accound_id = null ) {
         $this->key = $key;
         $this->secret = $secret;
         $this->host = $host;
+        $this->accound_id = $accound_id;
     }
-    
-    
+
+
     /**
      * Get Market Api
      */
     public function marketApi(){
-        return new MarketApi($this->key, $this->secret, $this->host);
+        return new MarketApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
-    
+
+
     /**
      * Get Trade Api
      */
     public function tradeApi(){
-        return new TradeApi($this->key, $this->secret, $this->host);
+        return new TradeApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
+
 
     /**
      * Get Position Api
      */
     public function positionApi(){
-        return new PositionApi($this->key, $this->secret, $this->host);
+        return new PositionApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
-    
+
+
     /**
      * Get Pre Upgrade Api
      */
     public function preUpgradeApi(){
-        return new PreUpgradeApi($this->key, $this->secret, $this->host);
+        return new PreUpgradeApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
-    
+
+
     /**
      * Get Account Api
      */
     public function accountApi(){
-        return new AccountApi($this->key, $this->secret, $this->host);
+        return new AccountApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
-    
+
+
     /**
      * Get Asset Api
      */
     public function assetApi(){
-        return new AssetApi($this->key, $this->secret, $this->host);
+        return new AssetApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
-    
+
+
     /**
      * Get User Api
      */
     public function userApi(){
-        return new UserApi($this->key, $this->secret, $this->host);
+        return new UserApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
+
 
     /**
      * Get Spot Leverage Token Api
      */
     public function spotLeverageTokenApi(){
-        return new SpotLeverageTokenApi($this->key, $this->secret, $this->host);
+        return new SpotLeverageTokenApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
 
-    
+
     /**
      * Get Spot Margin Trade (UTA) Api
      */
     public function spotMarginTradeUtaApi(){
-        return new SpotMarginTradeUtaApi($this->key, $this->secret, $this->host);
+        return new SpotMarginTradeUtaApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
-    
+
+
     /**
      * Get Spot Margin Trade (Normal) Api
      */
     public function spotMarginTradeNormalApi(){
-        return new SpotMarginTradeNormalApi($this->key, $this->secret, $this->host);
+        return new SpotMarginTradeNormalApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
-    
-    
+
+
     /**
      * Institutional Lending Api
      */
     public function institutionalLendingApi(){
-        return new InstitutionalLendingApi($this->key, $this->secret, $this->host);
+        return new InstitutionalLendingApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
 
-    
+
     /**
      * C2C Lending Api
      */
     public function c2CLendingApi(){
-        return new C2CLendingApi($this->key, $this->secret, $this->host);
+        return new C2CLendingApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
 
-    
+
     /**
      * Broker Api
      */
     public function brokerApi(){
-        return new BrokerApi($this->key, $this->secret, $this->host);
+        return new BrokerApi($this->key, $this->secret, $this->host, $this->accound_id);
     }
 
 }
