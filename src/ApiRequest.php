@@ -199,7 +199,7 @@ class ApiRequest {
                     $this->accound_id,
                     $uri,
                     $params,
-                    $response->getBody().' + api_code: '.$response->getApiCode(),
+                    ['body' => $response->getBody(), 'api_code' => $response->getApiCode()],
                     self::getRequestType($method),
                     'error',
                     $response_time,
