@@ -171,8 +171,7 @@ class ApiRequest {
 
             $guzzleResponse = $client->request($method, $uri, $options);
 
-            $end_time = microtime(true);
-            $response_time = $end_time - $start_time;
+            $response_time = microtime(true) - $start_time;
 
             $response = new ApiResponse($guzzleResponse);
 
@@ -227,6 +226,8 @@ class ApiRequest {
         }
         catch (\GuzzleHttp\Exception\GuzzleException $e) {
 
+            $response_time = microtime(true) - $start_time;
+
             ApiLogCls::save(
                 $this->accound_id,
                 $uri,
@@ -238,10 +239,14 @@ class ApiRequest {
                 $run_line
             );
 
+            report($e);
+
             $exception = new HttpException($e->getMessage(), $e->getCode(), $e);
             throw $exception;
         }
         catch (HttpException $exception) {
+
+            $response_time = microtime(true) - $start_time;
 
             ApiLogCls::save(
                 $this->accound_id,
@@ -258,6 +263,8 @@ class ApiRequest {
         }
         catch (\Exception $e) {
 
+            $response_time = microtime(true) - $start_time;
+
             ApiLogCls::save(
                 $this->accound_id,
                 $uri,
@@ -268,6 +275,8 @@ class ApiRequest {
                 $response_time,
                 $run_line
             );
+
+            report($e);
 
             $exception = new HttpException($e->getMessage(), $e->getCode(), $e);
             throw $exception;
